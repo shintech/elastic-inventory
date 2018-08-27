@@ -16,8 +16,8 @@ const logger = require('./logger')({ environment })
 const dev = environment !== 'production'
 
 var client = new elasticsearch.Client({
-  host: 'localhost:9200',
-  log: 'trace'
+  host: 'localhost:9200'
+  // log: 'trace'
 })
 
 const app = next({ dev })

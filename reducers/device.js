@@ -7,25 +7,19 @@ const about = (state = {}, action) => {
     case C.FETCH_DEVICES:
       return {
         ...state,
-        ...action.payload,
+        hits: action.payload.hits.hits,
         loading: false
       }
 
     case C.SEARCH_DEVICES:
-
-      const fuck = {
+      return {
         ...state,
-        ...action.payload,
+        hits: action.payload.hits.hits,
         loading: false
       }
-
-      return fuck
 
     case C.ADD_DEVICE:
-      return {
-        payload: 'success',
-        loading: false
-      }
+      return state
 
     default:
       return state

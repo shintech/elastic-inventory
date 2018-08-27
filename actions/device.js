@@ -40,24 +40,39 @@ export default {
     }
   },
 
-  addDevice: function (router, body) {
+  addDevice: function (body) {
     return async dispatch => {
-      let resp = await fetch(`/api/inventory`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(body)
-      })
+      let payload
 
-      let payload = await resp.json()
+      try {
+        let resp = await fetch(`/api/inventory`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(body)
+        })
 
-      router.push('/')
+        payload = await resp.json()
 
-      dispatch({
-        type: C.ADD_DEVICE,
-        payload
-      })
+        dispatch(addDeviceSuccess(payload))
+      } catch (err) {
+        dispatch(addDeviceError(err.message))
+      }
     }
+  }
+}
+
+function addDeviceSuccess (device) {
+  return {
+    type: C.ADD_DEVICE_SUCCESS,
+    payload: device
+  }
+}
+
+function addDeviceError (error) {
+  return {
+    type: C.ADD_DEVICE_ERROR,
+    payload: error
   }
 }

@@ -3,25 +3,26 @@ const router = express.Router()
 
 module.exports = function ({ client }) {
   router.get('/search', (req, res) => {
-    res.set('Content-Type', 'application/json')
-
     client.search({
       index: 'inventory',
       type: 'device',
       from: 0,
       size: 100,
       body: {
+        sort: [{ '_id': { 'order': 'asc' } }],
         query: {
           multi_match: {
             query: req.query.slug,
-            fields: ['serial', 'manufacturer', 'model', 'facility'],
+            fields: ['serial', 'manufacturer', 'model', 'facility', 'type'],
             fuzziness: '1'
           }
         }
       }
     })
-      .then(function (resp) {
-        res.send(resp)
+
+      .then(resp => res.json(resp))
+      .catch(err => {
+        throw new Error(err.message)
       })
   })
 
@@ -32,29 +33,27 @@ module.exports = function ({ client }) {
       from: 0,
       size: 100,
       body: {
+        sort: [{ '_id': { 'order': 'asc' } }],
         query: {
           match_all: {}
         }
       }
     })
 
-      .then(function (resp) {
-        res.send(resp)
-      })
+      .then(resp => res.send(resp))
       .catch(err => {
         throw new Error(err.message)
       })
   })
 
   router.post('/inventory', async (req, res) => {
-    console.log(req.body)
-    await client.index({
+    let response = await client.index({
       index: 'inventory',
       type: 'device',
       body: req.body
     })
 
-    res.send(req.body)
+    res.json(response)
   })
 
   return router

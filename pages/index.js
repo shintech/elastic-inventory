@@ -4,6 +4,7 @@ import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import action from '../actions'
 import Layout from '../layouts/Main'
+import Table from '../components/Table'
 
 class Sandbox extends React.Component {
   componentDidMount () {
@@ -19,29 +20,7 @@ class Sandbox extends React.Component {
           <input type='text' placeholder='Search...' onKeyUp={(e) => { this.props.searchDevices(e.target.value) }} />
         </form>
 
-        {(loading || !hits) ? <h1>Loading...</h1>
-          : <table>
-            <thead>
-              <tr>
-                <th>Facility</th>
-                <th>Model</th>
-                <th>Serial</th>
-                <th>Manufacturer</th>
-              </tr>
-            </thead>
-
-            <tbody>{hits.hits.map(hit => {
-              return (
-                <tr>
-                  <td>{hit._source.facility}</td>
-                  <td>{hit._source.model}</td>
-                  <td>{hit._source.serial}</td>
-                  <td>{hit._source.manufacturer}</td>
-                </tr>
-              )
-            })}</tbody>
-          </table>
-        }
+        {(loading || !hits) ? <h1>Loading...</h1> : <Table hits={hits} /> }
       </Layout>
     )
   }
@@ -71,6 +50,10 @@ export default connect(
 
     fetchDevices: () => {
       dispatch(action.device.fetchDevices())
+    },
+
+    createNewDevice: (attrs) => {
+      dispatch(action.device.addDevice(attrs))
     }
   })
 )(Sandbox)
